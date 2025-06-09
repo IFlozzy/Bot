@@ -279,12 +279,17 @@ bot.onText(/^\/check\s+(\S+)$/i, (msg, [, key]) => {
     });
 });
 
-// /getconfig — відправити файл config.json
-bot.onText(/^\/getconfig$/i, async msg => {
+// /getcoins — відправити файл coins.json в особисті повідомлення
+bot.onText(/^\/getcoins$/i, async msg => {
   if (!isAdmin(msg.from.id)) return;
-  const filePath = path.join(__dirname, '../config/config.json');
+
+  const filePath = path.join(__dirname, '../config/coins.json');
   try {
-    await bot.sendDocument(msg.chat.id, filePath);
+    // Відправляємо як потік, щоб Telegram розпізнав локальний файл
+    await bot.sendDocument(OWNER_ID, fs.createReadStream(filePath), {}, {
+      filename: 'coins.json',
+      contentType: 'application/json'
+    });
   } catch (err) {
     sendDM(`⛔️ Не вдалося відправити файл: ${err.message}`);
   }
