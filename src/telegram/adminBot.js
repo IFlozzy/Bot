@@ -279,9 +279,6 @@ bot.onText(/^\/check\s+(\S+)$/i, (msg, [, key]) => {
     });
 });
 
-import path from 'path';
-import fs   from 'fs';
-
 // /getconfig — відправити локальний config.json в особисті повідомлення
 bot.onText(/^\/getconfig$/i, async msg => {
   if (!isAdmin(msg.from.id)) return;
