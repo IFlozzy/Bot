@@ -279,6 +279,16 @@ bot.onText(/^\/check\s+(\S+)$/i, (msg, [, key]) => {
     });
 });
 
+// /getconfig — відправити файл config.json
+bot.onText(/^\/getconfig$/i, async msg => {
+  if (!isAdmin(msg.from.id)) return;
+  const filePath = path.join(__dirname, '../config/config.json');
+  try {
+    await bot.sendDocument(msg.chat.id, filePath);
+  } catch (err) {
+    sendDM(`⛔️ Не вдалося відправити файл: ${err.message}`);
+  }
+});
 
 // /help — перелік всіх команд і короткі пояснення
 bot.onText(/^\/help$/i, msg => {
@@ -293,7 +303,8 @@ bot.onText(/^\/help$/i, msg => {
 /set <KEY>\\n<JSON>  — додати/оновити сценарій  
 /delete <KEY>        — видалити сценарій  
 /check <KEY>         — запустити сценарій разово  
-/restart             — перезапустити core  
+/restart             — перезапустити core
+/getconfig           — відправити файл config.json
 /help                — ця довідка  
 
 🌐 *Проксі:*  
