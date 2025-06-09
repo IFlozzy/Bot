@@ -254,6 +254,30 @@ bot.onText(/^\/deleteproxy\s+(\S+)$/i, (msg, [, key]) => {
     // 5) Підтверджуємо
     sendDM(`✅ Видалено ${key} і перенумеровано ${entries.length} проксі`);
 });
+// /check KEY — запустити core з аргументом
+bot.onText(/^\/check\s+(\S+)$/i, (msg, [, key]) => {
+    if (!isAdmin(msg.from.id)) return;
+    const cfg = loadConfig();
+    if (!cfg[key]) return sendDM(`⛔️ сценарій "${key}" не знайдено`);
+    sendDM(`⏳ Запускаю сценарій "${key}"…`);
+    const proc = spawn(process.execPath, [corePath, key], {
+        cwd: baseDir,
+        stdio: ['ignore', 'pipe', 'pipe']
+    });
+    let output = '';
+    proc.stdout.on('data', chunk => {
+        process.stdout.write(chunk);
+        output += chunk.toString();
+    });
+    proc.stderr.on('data', chunk => {
+        process.stderr.write(chunk);
+        output += chunk.toString();
+    });
+    proc.on('close', code => {
+        const text = output.trim() || `Process exited with code ${code}`;
+        sendDM('```' + text + '```', { parse_mode: 'Markdown' });
+    });
+});
 
 
 // /help — перелік всіх команд і короткі пояснення
