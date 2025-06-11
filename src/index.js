@@ -242,6 +242,8 @@ async function getBestSellOption(token, sellExList, tokenAmount, proxy, cexInsts
             const symbol = ExchangeAdapter.adaptSymbol(token, exName);
             const res = await inst.simulateSell(tokenAmount, symbol).catch(() => ({ usdtReceived: 0 }));
             const usdtReceived = res.usdtReceived || 0;
+          // Лог продажі на CEX
+           console.log(`[SELL][CEX] ${exName}: ${usdtReceived.toFixed(4)} USDT`);
 
             if (usdtReceived > bestResult) {
                 bestResult = usdtReceived;
@@ -287,6 +289,8 @@ async function getBestSellOption(token, sellExList, tokenAmount, proxy, cexInsts
             const usdtReceived = await inst
                 .processing(pair, tokenAmount, proxy, `sell-${exName}`, ex.network)
                 .catch(() => 0) || 0;
+          // Лог продажі на DEX
+          console.log(`[SELL][DEX] ${exName} (${ex.network}): ${usdtReceived.toFixed(4)} USDT`);
 
             if (usdtReceived > bestResult) {
                 bestResult = usdtReceived;
