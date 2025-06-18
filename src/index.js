@@ -163,9 +163,9 @@ async function getBestBuyOption(token, buyExList, amount, proxy, cexInsts) {
 
             const symbol = ExchangeAdapter.adaptSymbol(token, exName);
             const res = await withTimeout(
-                    inst.simulateBuy(amount, symbol),
-                    3000             // наприклад, 3 секунди
-                 ).catch(() => ({ tokensBought: 0 }));
+                inst.simulateBuy(amount, symbol),
+                3000             // наприклад, 3 секунди
+            ).catch(() => ({ tokensBought: 0 }));
             const tokensBought = res.tokensBought || 0;
 
             console.log(`[BUY][CEX] ${exName}: ${tokensBought.toFixed(4)}`);
@@ -242,8 +242,8 @@ async function getBestSellOption(token, sellExList, tokenAmount, proxy, cexInsts
             const symbol = ExchangeAdapter.adaptSymbol(token, exName);
             const res = await inst.simulateSell(tokenAmount, symbol).catch(() => ({ usdtReceived: 0 }));
             const usdtReceived = res.usdtReceived || 0;
-          // Лог продажі на CEX
-           console.log(`[SELL][CEX] ${exName}: ${usdtReceived.toFixed(4)} USDT`);
+            // Лог продажі на CEX
+            console.log(`[SELL][CEX] ${exName}: ${usdtReceived.toFixed(4)} USDT`);
 
             if (usdtReceived > bestResult) {
                 bestResult = usdtReceived;
@@ -289,8 +289,8 @@ async function getBestSellOption(token, sellExList, tokenAmount, proxy, cexInsts
             const usdtReceived = await inst
                 .processing(pair, tokenAmount, proxy, `sell-${exName}`, ex.network)
                 .catch(() => 0) || 0;
-          // Лог продажі на DEX
-          console.log(`[SELL][DEX] ${exName} (${ex.network}): ${usdtReceived.toFixed(4)} USDT`);
+            // Лог продажі на DEX
+            console.log(`[SELL][DEX] ${exName} (${ex.network}): ${usdtReceived.toFixed(4)} USDT`);
 
             if (usdtReceived > bestResult) {
                 bestResult = usdtReceived;
@@ -393,21 +393,40 @@ async function runTrade(scenarioName, proxy, proxyIndex) {
 // Main loop: check proxies every 20 cycles, assign scenarios, run in parallel
 // ────────────────────────────────────────────────────────────────────────────────
 async function main() {
-    // завантажуємо весь список лише в старті
-    const allProxies   = Object.values(loadProxies());
-    let   aliveProxies = [...allProxies];
-    let   cycleCount   = 0;
+    const allProxies = Object.values(loadProxies());
+    let aliveProxies = [...allProxies];
+    let cycleCount = 0;
+
+    function estimateScenarioWeight(cfg) {
+        const runs = cfg.buyAmounts?.length || 1;
+
+        let dexBuy = 0, dexSell = 0, cexBuy = 0, cexSell = 0;
+
+        for (const ex of cfg.buyExchange) {
+            if (typeof ex === 'object') dexBuy++;
+            else cexBuy++;
+        }
+
+        for (const ex of cfg.sellExchange) {
+            if (typeof ex === 'object') dexSell++;
+            else cexSell++;
+        }
+
+        const dexWeight = runs * (dexBuy + dexSell);     // кожен amount = окремий запит
+        const cexWeight = (cexBuy + cexSell) * 0.5;       // лише раз на сценарій
+
+        return Math.max(1, Math.round(dexWeight + cexWeight));
+    }
 
     while (true) {
         try {
-            // раз на 20 циклів перевіряємо лише aliveProxies (або весь список, якщо ще нікого не маємо)
             if (cycleCount % 20 === 0) {
                 const toCheck = aliveProxies.length ? aliveProxies : allProxies;
-                const checks  = toCheck.map(url =>
+                const checks = toCheck.map(url =>
                     isProxyAlive(url).then(ok => ok ? url : null).catch(() => null)
                 );
                 const results = await Promise.all(checks);
-                aliveProxies  = results.filter(Boolean);
+                aliveProxies = results.filter(Boolean);
                 console.log(`Active proxies (rechecked): ${aliveProxies.length}`);
             }
 
@@ -418,13 +437,39 @@ async function main() {
                 continue;
             }
 
-            // тут ваша звична логіка запуску сценаріїв, наприклад:
-            const tasks = scenarios.map((sc, idx) => {
-                const proxy = aliveProxies[idx % aliveProxies.length];
-                return runTrade(sc, proxy, idx + 1).catch(e => console.error(e));
-            });
-            await Promise.allSettled(tasks);
+            const proxyLoads = Array(aliveProxies.length).fill(0);
+            const proxyAssignments = Array.from({ length: aliveProxies.length }, () => []);
 
+            for (const scenarioName of scenarios) {
+                const cfg = loadConfig()[scenarioName];
+                if (!cfg) continue;
+
+                const weight = estimateScenarioWeight(cfg);
+
+                let minIdx = 0;
+                for (let i = 1; i < proxyLoads.length; i++) {
+                    if (proxyLoads[i] < proxyLoads[minIdx]) {
+                        minIdx = i;
+                    }
+                }
+
+                proxyLoads[minIdx] += weight;
+                proxyAssignments[minIdx].push(scenarioName);
+            }
+
+            const tasks = proxyAssignments.map((scenariosForProxy, proxyIdx) => {
+                const proxy = aliveProxies[proxyIdx];
+                return Promise.allSettled(
+                    scenariosForProxy.map(sc =>
+                        runTrade(sc, proxy, proxyIdx + 1).catch(e => {
+                            if (typeof e?.message === 'string' && e.message.includes('ETELEGRAM: 429')) return;
+                            console.error(`[P${proxyIdx + 1}] Error in scenario ${sc}:`, e);
+                        })
+                    )
+                );
+            });
+
+            await Promise.allSettled(tasks);
             cycleCount++;
         } catch (e) {
             console.error(`Main loop error: ${e.message}`);
@@ -434,13 +479,14 @@ async function main() {
     }
 }
 
-     const keyArg = process.argv[2];
+
+const keyArg = process.argv[2];
 if (keyArg) {
-      // Одноразовий запуск без проксі (proxy = null, proxyIndex = 1)
-           runTrade(keyArg, null, 1)
-    .catch(err => console.error(err))
-      .then(() => process.exit(0));
-   } else {
-   // Стандартний нескінченний цикл
-      main().catch(err => console.error(`Fatal error: ${err.message}`));
-  }
+    // Одноразовий запуск без проксі (proxy = null, proxyIndex = 1)
+    runTrade(keyArg, null, 1)
+        .catch(err => console.error(err))
+        .then(() => process.exit(0));
+} else {
+    // Стандартний нескінченний цикл
+    main().catch(err => console.error(`Fatal error: ${err.message}`));
+}
