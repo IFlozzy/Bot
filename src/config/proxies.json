@@ -40,5 +40,20 @@
   "flow39": "socks5://user137705:8i2wby@89.185.1.61:13815",
   "flow40": "socks5://user137705:8i2wby@89.185.1.21:13815",
   "flow41": "socks5://user137705:8i2wby@89.185.1.10:13815",
-  "flow42": "socks5://ps77126:EfqhzrDG8A@91.238.105.80:8000"
+  "flow42": "socks5://ps77126:EfqhzrDG8A@91.238.105.80:8000",
+  "flow43": "socks5://ps139178:qzigL1aCEx@130.0.239.116:8000",
+  "flow44": "socks5://ps139178:qzigL1aCEx@141.11.252.48:8000",
+  "flow45": "socks5://ps139178:qzigL1aCEx@95.46.107.73:8000",
+  "flow46": "socks5://ps139178:qzigL1aCEx@141.11.252.22:8000",
+  "flow47": "socks5://ps139178:qzigL1aCEx@87.247.152.119:8000",
+  "flow48": "socks5://ps139178:qzigL1aCEx@176.103.56.14:8000",
+  "flow49": "socks5://ps139178:qzigL1aCEx@185.157.77.142:8000",
+  "flow50": "socks5://ps139178:qzigL1aCEx@176.103.55.241:8000",
+  "flow51": "socks5://ps139178:qzigL1aCEx@91.194.78.94:8000",
+  "flow52": "socks5://ps139178:qzigL1aCEx@31.222.235.12:8000",
+  "flow53": "socks5://ps139178:qzigL1aCEx@185.86.79.5:8000",
+  "flow54": "socks5://ps139178:qzigL1aCEx@194.15.114.47:8000",
+  "flow55": "socks5://ps139178:qzigL1aCEx@194.38.21.202:8000",
+  "flow56": "socks5://ps139178:qzigL1aCEx@194.15.114.145:8000",
+  "flow57": "socks5://ps139178:qzigL1aCEx@91.194.78.91:8000"
 }
