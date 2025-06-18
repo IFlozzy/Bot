@@ -33,6 +33,9 @@ import TelegramNotifier from './telegram/telegramNotifier.js';
 import { loadProxies } from './config/proxyManager.js';
 import axios from 'axios';
 import { SocksProxyAgent } from 'socks-proxy-agent';
+import { sendErrorDM, sendScenarioErrorFile } from './telegram/errorNotifier.js';
+
+
 
 const telegram = new TelegramNotifier();
 
@@ -134,7 +137,8 @@ async function prepareCexInstances(token, buyExList, sellExList, proxy) {
                     3000
                 );
             } catch (err) {
-                console.error(`${name} getOrderBook error: ${err.message}`);
+                console.error(`[${name}] getOrderBook (${symbol}) error via proxy ${proxy || 'DIRECT'}: ${err.message}`);
+
                 // Пропускаємо цей CEX, якщо не змогли завантажити книгу
                 continue;
             }
@@ -316,8 +320,21 @@ async function runTrade(scenarioName, proxy, proxyIndex) {
     console.log(`
 [P${proxyIndex}] Scenario ${scenarioName} (token ${token}${scenarioNetwork ? `, net ${scenarioNetwork}` : ''})`);
 
-    const cexInsts = await prepareCexInstances(token, buyExchange, sellExchange, proxy);
-
+    let cexInsts;
+    try {
+        cexInsts = await prepareCexInstances(token, buyExchange, sellExchange, proxy);
+    } catch (e) {
+        const cfg = loadConfig()[scenarioName];
+        const payload = {
+            scenario: scenarioName,
+            proxy,
+            error: e?.stack || e?.message || e,
+            config: cfg
+        };
+        await sendErrorDM('```json\n' + JSON.stringify(payload, null, 2) + '\n```');
+        console.error(`[P${proxyIndex}] prepareCexInstances error:`, e);
+        return;
+    }
     for (const { amount, notificationThreshold } of buyAmounts) {
         console.log(`[P${proxyIndex}] Amount ${amount} USDT`);
 
@@ -392,6 +409,25 @@ async function runTrade(scenarioName, proxy, proxyIndex) {
 // ────────────────────────────────────────────────────────────────────────────────
 // Main loop: check proxies every 20 cycles, assign scenarios, run in parallel
 // ────────────────────────────────────────────────────────────────────────────────
+async function runTradeWithLogging(scenarioName, proxy, proxyIndex) {
+    const logLines = [];
+    const log = (msg) => {
+        const line = `[P${proxyIndex}] ${msg}`;
+        console.log(line);
+        logLines.push(line);
+    };
+
+    try {
+        await runTrade(scenarioName, proxy, proxyIndex, log);
+    } catch (e) {
+        if (typeof e?.message === 'string' && e.message.includes('ETELEGRAM: 429')) return;
+
+        logLines.push('');
+        logLines.push('❌ ' + (e.stack || e.message || e));
+        await sendErrorDM('```log\n' + logLines.join('\n') + '\n```');
+        console.error(`[P${proxyIndex}] Error in scenario ${scenarioName}:`, e);
+    }
+}
 async function main() {
     const allProxies = Object.values(loadProxies());
     let aliveProxies = [...allProxies];
@@ -399,7 +435,6 @@ async function main() {
 
     function estimateScenarioWeight(cfg) {
         const runs = cfg.buyAmounts?.length || 1;
-
         let dexBuy = 0, dexSell = 0, cexBuy = 0, cexSell = 0;
 
         for (const ex of cfg.buyExchange) {
@@ -412,8 +447,8 @@ async function main() {
             else cexSell++;
         }
 
-        const dexWeight = runs * (dexBuy + dexSell);     // кожен amount = окремий запит
-        const cexWeight = (cexBuy + cexSell) * 0.5;       // лише раз на сценарій
+        const dexWeight = runs * (dexBuy + dexSell);
+        const cexWeight = (cexBuy + cexSell) * 0.5;
 
         return Math.max(1, Math.round(dexWeight + cexWeight));
     }
@@ -445,7 +480,6 @@ async function main() {
                 if (!cfg) continue;
 
                 const weight = estimateScenarioWeight(cfg);
-
                 let minIdx = 0;
                 for (let i = 1; i < proxyLoads.length; i++) {
                     if (proxyLoads[i] < proxyLoads[minIdx]) {
@@ -460,12 +494,30 @@ async function main() {
             const tasks = proxyAssignments.map((scenariosForProxy, proxyIdx) => {
                 const proxy = aliveProxies[proxyIdx];
                 return Promise.allSettled(
-                    scenariosForProxy.map(sc =>
-                        runTrade(sc, proxy, proxyIdx + 1).catch(e => {
+                    scenariosForProxy.map(scenarioName => {
+                        const logLines = [];
+                        const log = (msg) => {
+                            const line = `[P${proxyIdx + 1}] ${msg}`;
+                            console.log(line);
+                            logLines.push(line);
+                        };
+
+                        return runTrade(scenarioName, proxy, proxyIdx + 1, log).catch(e => {
                             if (typeof e?.message === 'string' && e.message.includes('ETELEGRAM: 429')) return;
-                            console.error(`[P${proxyIdx + 1}] Error in scenario ${sc}:`, e);
-                        })
-                    )
+
+                            const payload = {
+                                scenario: scenarioName,
+                                proxy,
+                                error: e?.stack || e?.message || String(e)
+                            };
+
+                            return sendErrorDM('```json\n' + JSON.stringify(payload, null, 2) + '\n```')
+                                .finally(() => {
+                                    console.error(`[P${proxyIdx + 1}] Error in scenario ${scenarioName}:`, e);
+                                });
+                        });
+
+                    })
                 );
             });
 
@@ -478,8 +530,6 @@ async function main() {
         }
     }
 }
-
-
 const keyArg = process.argv[2];
 if (keyArg) {
     // Одноразовий запуск без проксі (proxy = null, proxyIndex = 1)
