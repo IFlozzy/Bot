@@ -4,7 +4,7 @@ import { SocksProxyAgent } from 'socks-proxy-agent';
 import { OPENOCEAN_NETWORKS } from '../networks/networksOpenocean.js';
 
 class OpenOcean {
-    static RATE_LIMIT      = 480;
+    static RATE_LIMIT      = 120;
     static TIME_PERIOD     = 60 * 1000; // мілісекунди
     static BASE_SWAP_URL   = 'https://app.openocean.finance/swap/';
 

@@ -12,6 +12,7 @@ import Magpie from './exchanges/Magpie.js';
 import SushiSwap from './exchanges/SushiSwap.js';
 import Raydium from './exchanges/Raydium.js';
 import Relay from './exchanges/Relay.js';
+import KyberSwap from './exchanges/KyberSwap.js' ;
 
 
 // CEX adapters
@@ -49,7 +50,7 @@ console.error = (...args) => {
     _origConsoleError(...args);
 };
 
-const dexList = ['Odos', 'Jupiter', 'OpenOcean', 'CoWSwap', 'Magpie', 'SushiSwap', 'Raydium', 'Relay'];
+const dexList = ['Odos', 'Jupiter', 'OpenOcean', 'CoWSwap', 'Magpie', 'SushiSwap', 'Raydium', 'Relay','KyberSwap'];
 const scenarios = Object.keys(loadConfig());
 const proxyFlows = Object.values(loadProxies());
 /**
@@ -134,7 +135,7 @@ async function prepareCexInstances(token, buyExList, sellExList, proxy) {
                 // Гарантуємо таймаут 3с на отримання order book
                 book = await withTimeout(
                     inst.getOrderBook(symbol),
-                    3000
+                    10000
                 );
             } catch (err) {
                 console.error(`[${name}] getOrderBook (${symbol}) error via proxy ${proxy || 'DIRECT'}: ${err.message}`);
@@ -195,6 +196,7 @@ async function getBestBuyOption(token, buyExList, amount, proxy, cexInsts) {
                 case 'SushiSwap': inst = new SushiSwap(); break;
                 case 'Raydium':   inst = new Raydium();   break;
                 case 'Relay':     inst = new Relay();     break;
+                case 'KyberSwap': inst = new KyberSwap(); break;
             }
             if (!inst) continue;
 
@@ -270,6 +272,7 @@ async function getBestSellOption(token, sellExList, tokenAmount, proxy, cexInsts
                 case 'SushiSwap': inst = new SushiSwap(); break;
                 case 'Raydium':   inst = new Raydium();   break;
                 case 'Relay':     inst = new Relay();     break;
+                case 'KyberSwap': inst = new KyberSwap(); break;
             }
 
             if (!inst) continue;

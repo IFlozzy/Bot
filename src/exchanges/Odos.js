@@ -5,7 +5,7 @@ import USDTContracts from '../contracts/USDTContracts.js';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 
 class Odos {
-    static RATE_LIMIT = 480;
+    static RATE_LIMIT = 120;
     static TIME_PERIOD = 60 * 1000; // період у мілісекундах
 
     constructor() {

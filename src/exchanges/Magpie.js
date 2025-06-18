@@ -7,7 +7,7 @@ class Magpie {
     constructor() {
         this.apiUrl = 'https://api.magpiefi.xyz/aggregator/quote';
         this.proxyUrl = null;
-        this.limiter = new Bottleneck({ maxConcurrent: 1, minTime: 250 });
+        this.limiter = new Bottleneck({ maxConcurrent: 1, minTime: 120 });
     }
 
     setProxy(proxyUrl) {
@@ -17,7 +17,7 @@ class Magpie {
     async getQuote(params) {
         const config = {
             headers: { 'Content-Type': 'application/json' },
-            timeout: 10000
+            timeout: 15000
         };
 
         if (this.proxyUrl) {

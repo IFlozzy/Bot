@@ -281,21 +281,21 @@ bot.onText(/^\/check\s+(\S+)$/i, (msg, [, key]) => {
 
 // /getconfig — відправити локальний config.json в особисті повідомлення
 bot.onText(/^\/getconfig$/i, async msg => {
-  if (!isAdmin(msg.from.id)) return;
+    if (!isAdmin(msg.from.id)) return;
 
-  const filePath = path.join(__dirname, '../config/coins.json');
-  try {
-    await bot.sendDocument(OWNER_ID,
-      fs.createReadStream(filePath),
-      {}, // опції повідомлення
-      {
-        filename: 'config.json',
-        contentType: 'application/json'
-      }
-    );
-  } catch (err) {
-    sendDM(`⛔️ Не вдалося відправити файл: ${err.message}`);
-  }
+    const filePath = path.join(__dirname, '../config/coins.json');
+    try {
+        await bot.sendDocument(OWNER_ID,
+            fs.createReadStream(filePath),
+            {}, // опції повідомлення
+            {
+                filename: 'config.json',
+                contentType: 'application/json'
+            }
+        );
+    } catch (err) {
+        sendDM(`⛔️ Не вдалося відправити файл: ${err.message}`);
+    }
 });
 
 // /help — перелік всіх команд і короткі пояснення
