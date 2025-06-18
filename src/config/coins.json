@@ -3302,43 +3302,6 @@
     ],
     "Bridge": "https://bridge.arbitrum.io/"
   },
-  "OCEAN_CEX": {
-    "token": "OCEAN",
-    "buyExchange": [
-      "Kraken"
-    ],
-    "sellExchange": [
-      {
-        "name": "OpenOcean",
-        "network": "polygon",
-        "inputToken": {
-          "symbol": "OCEAN",
-          "address": "0x282d8efCe846A88B159800bd4130ad77443Fa1A1",
-          "decimals": 18
-        },
-        "outputToken": {
-          "symbol": "USDT",
-          "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-          "decimals": 6
-        }
-      }
-    ],
-    "buyAmounts": [
-      {
-        "amount": 500,
-        "notificationThreshold": 2
-      },
-      {
-        "amount": 800,
-        "notificationThreshold": 1.5
-      },
-      {
-        "amount": 1200,
-        "notificationThreshold": 1.5
-      }
-    ],
-    "Bridge": "https://wallet.polygon.technology/"
-  },
   "SFI_CEX": {
     "token": "SFI",
     "buyExchange": [
@@ -4541,49 +4504,12 @@
     ],
     "Bridge": "https://interchain.axelar.dev/arbitrum"
   },
-  "OCEAN_DEX": {
-    "token": "OCEAN",
-    "buyExchange": [
-      {
-        "name": "OpenOcean",
-        "network": "polygon",
-        "inputToken": {
-          "symbol": "USDT",
-          "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-          "decimals": 6
-        },
-        "outputToken": {
-          "symbol": "OCEAN",
-          "address": "0x282d8efCe846A88B159800bd4130ad77443Fa1A1",
-          "decimals": 18
-        }
-      }
-    ],
-    "sellExchange": [
-      "Kraken"
-    ],
-    "buyAmounts": [
-      {
-        "amount": 500,
-        "notificationThreshold": 2
-      },
-      {
-        "amount": 800,
-        "notificationThreshold": 1.5
-      },
-      {
-        "amount": 1200,
-        "notificationThreshold": 1.5
-      }
-    ],
-    "Bridge": "https://wallet.polygon.technology/"
-  },
   "FUL_DEX": {
     "token": "FUL",
     "buyExchange": [
       {
-        "name": "Magpie",
-        "network": "zksync",
+        "name": "Odos",
+        "network": "ZkSync",
         "inputToken": {
           "symbol": "USDT",
           "address": "0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4",
@@ -4605,5 +4531,371 @@
         "notificationThreshold": 3
       }
     ]
+  },
+  "CYBER": {
+    "token": "CYBER",
+    "buyExchange": [
+      "Bybit",
+      {
+        "name": "Magpie",
+        "network": "base",
+        "inputToken": {
+          "symbol": "USDT",
+          "address": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "decimals": 6
+        },
+        "outputToken": {
+          "symbol": "CYBER",
+          "address": "0x14778860E937f509e651192a90589dE711Fb88a9",
+          "decimals": 18
+        }
+      },
+      {
+        "name": "Jupiter",
+        "network": "solana",
+        "inputToken": {
+          "symbol": "USDT",
+          "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "decimals": 6
+        },
+        "outputToken": {
+          "symbol": "Cyber",
+          "address": "5gzCDgVf5Nk6gosa5dpYZV6P6RiAytvCyQUaMwAVyf8z",
+          "decimals": 9
+        }
+      }
+    ],
+    "sellExchange": [
+      "Bybit",
+      {
+        "name": "Magpie",
+        "network": "base",
+        "inputToken": {
+          "symbol": "CYBER",
+          "address": "0x14778860E937f509e651192a90589dE711Fb88a9",
+          "decimals": 18
+        },
+        "outputToken": {
+          "symbol": "USDT",
+          "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "decimals": 6
+        }
+      },
+      {
+        "name": "Jupiter",
+        "network": "solana",
+        "inputToken": {
+          "symbol": "Cyber",
+          "address": "5gzCDgVf5Nk6gosa5dpYZV6P6RiAytvCyQUaMwAVyf8z",
+          "decimals": 9
+        },
+        "outputToken": {
+          "symbol": "USDT",
+          "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "decimals": 6
+        }
+      }
+    ],
+    "buyAmounts": [
+      {
+        "amount": 300,
+        "notificationThreshold": 2
+      }
+    ],
+    "Bridge": "https://cyber.co/bridge?tab=2%2C1"
+  },
+  "STG": {
+    "token": "STG",
+    "buyExchange": [
+      {
+        "name": "Magpie",
+        "network": "fantom",
+        "inputToken": {
+          "symbol": "USDT",
+          "address": "0x1b6382dbdea11d97f24495c9a90b7c88469134a4",
+          "decimals": 6
+        },
+        "outputToken": {
+          "symbol": "STG",
+          "address": "0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590",
+          "decimals": 18
+        }
+      }
+    ],
+    "sellExchange": [
+      "Binance"
+    ],
+    "buyAmounts": [
+      {
+        "amount": 100,
+        "notificationThreshold": 3
+      }
+    ]
+  },
+  "NAI": {
+    "token": "NAI",
+    "buyExchange": [
+      "Mexc",
+      "Gate",
+      {
+        "name": "Magpie",
+        "network": "ethereum",
+        "inputToken": {
+          "symbol": "USDT",
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "decimals": 6
+        },
+        "outputToken": {
+          "symbol": "NAI",
+          "address": "0x5Ac34C53A04B9aaA0BF047e7291fb4e8A48f2A18",
+          "decimals": 18
+        }
+      }
+    ],
+    "sellExchange": [
+      "Mexc",
+      "Gate",
+      {
+        "name": "Magpie",
+        "network": "ethereum",
+        "inputToken": {
+          "symbol": "NAI",
+          "address": "0x5Ac34C53A04B9aaA0BF047e7291fb4e8A48f2A18",
+          "decimals": 18
+        },
+        "outputToken": {
+          "symbol": "USDT",
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "decimals": 6
+        }
+      }
+    ],
+    "buyAmounts": [
+      {
+        "amount": 1000,
+        "notificationThreshold": 3
+      }
+    ],
+    "Bridge": "https://bridge.nexera.network/"
+  },
+  "NGL": {
+    "token": "NGL",
+    "buyExchange": [
+      "Kucoin",
+      "Gate"
+    ],
+    "sellExchange": [
+      {
+        "name": "Magpie",
+        "network": "avalanche",
+        "inputToken": {
+          "symbol": "NAI",
+          "address": "0x441EEd9FeE4f002c541abC91075D35cD28Fd6f7D",
+          "decimals": 18
+        },
+        "outputToken": {
+          "symbol": "USDT",
+          "address": "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          "decimals": 6
+        }
+      }
+    ],
+    "buyAmounts": [
+      {
+        "amount": 500,
+        "notificationThreshold": 3
+      }
+    ],
+    "Bridge": "https://www.chainport.io/"
+  },
+  "ASTR": {
+    "token": "ASTR",
+    "buyExchange": [
+      "Mexc",
+      "Gate",
+      "Bitget",
+      {
+        "name": "Magpie",
+        "network": "ethereum",
+        "inputToken": {
+          "symbol": "USDT",
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "decimals": 6
+        },
+        "outputToken": {
+          "symbol": "ASTR",
+          "address": "0xF27441230EADEaC85B764610325Cc9a0D7859689",
+          "decimals": 18
+        }
+      }
+    ],
+    "sellExchange": [
+      "Mexc",
+      "Gate",
+      "Bitget",
+      {
+        "name": "Magpie",
+        "network": "ethereum",
+        "inputToken": {
+          "symbol": "ASTR",
+          "address": "0xF27441230EADEaC85B764610325Cc9a0D7859689",
+          "decimals": 18
+        },
+        "outputToken": {
+          "symbol": "USDT",
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "decimals": 6
+        }
+      }
+    ],
+    "buyAmounts": [
+      {
+        "amount": 1000,
+        "notificationThreshold": 2
+      }
+    ],
+    "Bridge": "https://portal.astar.network/astar/assets/transfer?token=astr&mode=local"
+  },
+  "OCEAN": {
+    "token": "OCEAN",
+    "buyExchange": [
+      "Kraken",
+      {
+        "name": "OpenOcean",
+        "network": "polygon",
+        "inputToken": {
+          "symbol": "USDT",
+          "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+          "decimals": 6
+        },
+        "outputToken": {
+          "symbol": "OCEAN",
+          "address": "0x282d8efCe846A88B159800bd4130ad77443Fa1A1",
+          "decimals": 18
+        }
+      },
+      {
+        "name": "Magpie",
+        "network": "ethereum",
+        "inputToken": {
+          "symbol": "USDT",
+          "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "decimals": 6
+        },
+        "outputToken": {
+          "symbol": "OCEAN",
+          "address": "0x967da4048cD07aB37855c090aAF366e4ce1b9F48",
+          "decimals": 18
+        }
+      }
+    ],
+    "sellExchange": [
+      "Kraken",
+      {
+        "name": "OpenOcean",
+        "network": "polygon",
+        "inputToken": {
+          "symbol": "OCEAN",
+          "address": "0x282d8efCe846A88B159800bd4130ad77443Fa1A1",
+          "decimals": 18
+        },
+        "outputToken": {
+          "symbol": "USDT",
+          "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+          "decimals": 6
+        }
+      },
+      {
+        "name": "Magpie",
+        "network": "ethereum",
+        "inputToken": {
+          "symbol": "OCEAN",
+          "address": "0x967da4048cD07aB37855c090aAF366e4ce1b9F48",
+          "decimals": 18
+        },
+        "outputToken": {
+          "symbol": "USDT",
+          "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "decimals": 6
+        }
+      }
+    ],
+    "buyAmounts": [
+      {
+        "amount": 1000,
+        "notificationThreshold": 2
+      }
+    ],
+    "Bridge": "https://wallet.polygon.technology/"
+  },
+  "ZFI": {
+    "token": "ZFI",
+    "buyExchange": [
+      {
+        "name": "Magpie",
+        "network": "base",
+        "inputToken": {
+          "symbol": "USDT",
+          "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "decimals": 6
+        },
+        "outputToken": {
+          "symbol": "ZFI",
+          "address": "0xD080eD3c74a20250a2c9821885203034ACD2D5ae",
+          "decimals": 18
+        }
+      },
+      {
+        "name": "OpenOcean",
+        "network": "zksync",
+        "inputToken": {
+          "symbol": "USDT",
+          "address": "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4",
+          "decimals": 6
+        },
+        "outputToken": {
+          "symbol": "ZFI",
+          "address": "0x5d0d7BCa050e2E98Fd4A5e8d3bA823B49f39868d",
+          "decimals": 18
+        }
+      }
+    ],
+    "sellExchange": [
+      {
+        "name": "Magpie",
+        "network": "base",
+        "inputToken": {
+          "symbol": "CYBER",
+          "address": "0xD080eD3c74a20250a2c9821885203034ACD2D5ae",
+          "decimals": 18
+        },
+        "outputToken": {
+          "symbol": "USDT",
+          "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "decimals": 6
+        }
+      },
+      {
+        "name": "Magpie",
+        "network": "zksync",
+        "inputToken": {
+          "symbol": "ZFI",
+          "address": "0x5d0d7BCa050e2E98Fd4A5e8d3bA823B49f39868d",
+          "decimals": 18
+        },
+        "outputToken": {
+          "symbol": "USDT",
+          "address": "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4",
+          "decimals": 6
+        }
+      }
+    ],
+    "buyAmounts": [
+      {
+        "amount": 300,
+        "notificationThreshold": 2
+      }
+    ],
+    "Bridge": "https://www.zyf.ai/bridge"
   }
 }
